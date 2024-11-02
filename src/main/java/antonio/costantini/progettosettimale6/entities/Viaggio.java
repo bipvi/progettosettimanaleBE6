@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @NoArgsConstructor
+@Table(name = "viaggi")
 public class Viaggio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

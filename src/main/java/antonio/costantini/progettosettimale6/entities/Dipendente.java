@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Entity
+@Table(name = "dipendenti")
 public class Dipendente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +30,6 @@ public class Dipendente {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
+        this.img_profilo = "https://ui-avatars.com/api/?name=" + nome + "+" + cognome;
     }
 }
