@@ -8,6 +8,7 @@ package antonio.costantini.progettosettimale6.Controller;
 
 import antonio.costantini.progettosettimale6.Repository.ViaggioRepository;
 import antonio.costantini.progettosettimale6.Services.ViaggioService;
+import antonio.costantini.progettosettimale6.entities.Stato;
 import antonio.costantini.progettosettimale6.entities.Viaggio;
 import antonio.costantini.progettosettimale6.exceptions.BadRequestException;
 import antonio.costantini.progettosettimale6.payloads.NewViaggioDTO;
@@ -62,5 +63,12 @@ public class ViaggioController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int viaggiId) {
         this.viaggioService.findAndDeleteViaggio(viaggiId);
+    }
+
+    @PatchMapping("/{viaggiId}/stato")
+    public Stato updateState(@PathVariable("viaggiId") int id,
+                             @RequestParam("stato") String stato) {
+        Stato s = Stato.valueOf(stato);
+        return this.viaggioService.UpdateState(id, s);
     }
 }

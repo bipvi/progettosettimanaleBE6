@@ -16,13 +16,10 @@ public record NewViaggioDTO (
         @Size(min = 1, message = "Il campo destionazione deve contenere almeno 1 carattere")
         String destinazione,
         @NotEmpty
-        @Pattern(regexp = "^((2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26]))-02-29)$"
-                + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
-                + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$"
-                + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$")
+        @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$", message = "Il campo deve essere una data nel formato 'yyyy-mm-dd'")
         LocalDate data,
         @NotEmpty
-        @Pattern(regexp = "/(?:^|(?<= ))(IN_PROGRAMMA| COMPLETATO)")
+        @Pattern(regexp = "/(?:^|(?<= ))(IN_PROGRAMMA| COMPLETATO)", message = "Il campo deve essere 'IN_PROGRAMMA' o 'COMPLETATO'")
         Stato stato,
         @NotEmpty
         @Min(1)

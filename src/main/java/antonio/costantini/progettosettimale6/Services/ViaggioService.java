@@ -29,7 +29,7 @@ public class ViaggioService {
 
     public Viaggio save(NewViaggioDTO body) {
         Dipendente dipendente = this.dipendenteService.findById(body.dipendenteId());
-            this.viaggioRepository.getViaggioByDipendente_IdAndData(dipendente, body.data()).ifPresent(
+            this.viaggioRepository.getViaggioByDipendente_IdAndData(dipendente.getId(), body.data()).ifPresent(
                 v -> {
                     throw new BadRequestException("Il dipendente " + dipendente.getId() + " già in viaggio");
                 });
@@ -39,7 +39,7 @@ public class ViaggioService {
 
 
     public Page<Viaggio> getViaggi(int page, int size, String sortBy){
-        if (size <= 50 ) size = 50;
+        if (size >= 50 ) size = 50;
         Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
         return this.viaggioRepository.findAll(pageable);
     }
@@ -53,7 +53,7 @@ public class ViaggioService {
         Viaggio found = this.findViaggioByID(id);
 
         if(!found.getData().isEqual(body.data()) && !found.getDipendente().equals(d)){
-            this.viaggioRepository.getViaggioByDipendente_IdAndData(d, body.data()).ifPresent(
+            this.viaggioRepository.getViaggioByDipendente_IdAndData(d.getId(), body.data()).ifPresent(
                     v -> {
                         throw new BadRequestException("Il dipendente " + d.getEmail() + " già in viaggio");
                     }
@@ -68,8 +68,8 @@ public class ViaggioService {
     }
 
     public Stato UpdateState(int id, Stato stato){
-        Viaggio found = this.findViaggioByID(id);
-        if (!found.getStato().equals(stato)) {
+        Viaggio found = this.viaggioRepository.findById(id).orElseThrow();
+        if (found.getStato().equals(stato)) {
             throw new BadRequestException("Lo stato del viaggio: " + found.getId() + " è già in " + stato);
         }
         found.setStato(stato);

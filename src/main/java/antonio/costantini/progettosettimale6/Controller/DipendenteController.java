@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.stream.Collectors;
 
@@ -30,7 +31,6 @@ public class DipendenteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Dipendente save(@RequestBody NewDipendenteDTO body, BindingResult bindingResult) {
-        System.out.println("UH9cebwucbe9oufb9ubv9eof");
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" - "));
             throw new BadRequestException(error);
@@ -54,7 +54,12 @@ public class DipendenteController {
 
     @DeleteMapping("/{dipenteId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int dipendenteId) {
+    public void delete(@PathVariable("dipenteId") int dipendenteId) {
         this.dipendenteService.findAndDelete(dipendenteId);
+    }
+
+    @PatchMapping("/{dipenteId}/img")
+    public Dipendente uploadImage(@PathVariable("dipenteId") int dipendenteId, @RequestParam("img") MultipartFile file) {
+        return this.dipendenteService.uploadImg(dipendenteId, file);
     }
 }
