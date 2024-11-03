@@ -1,6 +1,7 @@
 package antonio.costantini.progettosettimale6.Services;
 
 import antonio.costantini.progettosettimale6.Repository.DipendenteRepository;
+import antonio.costantini.progettosettimale6.Repository.PrenotazioneRepository;
 import antonio.costantini.progettosettimale6.Repository.ViaggioRepository;
 import antonio.costantini.progettosettimale6.entities.Dipendente;
 import antonio.costantini.progettosettimale6.entities.Viaggio;
@@ -12,6 +13,7 @@ import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +26,13 @@ public class DipendenteService {
     @Autowired
     private DipendenteRepository dipendenteRepository;
     @Autowired
-    private ViaggioRepository viaggioRepository;
-    @Autowired
     private Cloudinary cloudinary;
 
     public Dipendente save(NewDipendenteDTO body) {
+        if (dipendenteRepository.existsByUsername(body.username()))
+            throw new BadRequestException("Username già in uso");
+        if (dipendenteRepository.existsByEmail(body.email()))
+            throw new BadRequestException("Email ogià in uso");
         Dipendente d = new Dipendente(body.username(), body.name(), body.cognome(), body.email());
         return dipendenteRepository.save(d);
     }
@@ -44,7 +48,6 @@ public class DipendenteService {
 
     public Dipendente findDipendenteAndUpdate(int id, NewDipendenteDTO body) {
         Dipendente found = findById(id);
-
         if (!found.getEmail().equals(body.email())) {
             this.dipendenteRepository.findByEmail(body.email()).ifPresent(
                     d -> {
@@ -53,6 +56,13 @@ public class DipendenteService {
             );
         }
 
+        if (!found.getUsername().equals(body.username())) {
+            this.dipendenteRepository.findByUsername(body.username()).ifPresent(
+                    d -> {
+                        throw new BadRequestException("L'username " + body.username() + " è già in uso");
+                    }
+            );
+        }
         found.setCognome(body.cognome());
         found.setNome(body.name());
         found.setEmail(body.email());
@@ -62,23 +72,18 @@ public class DipendenteService {
     }
 
     public void findAndDelete(int id) {
-        Optional<Viaggio> v = this.viaggioRepository.getViaggiosByDipendente_Id(id);
-        if(v.isPresent()) {
-            this.viaggioRepository.deleteById(v.get().getId());
-        }
-
-        dipendenteRepository.deleteById(id);
+        Dipendente found = findById(id);
+        dipendenteRepository.delete(found);
     }
 
     public Dipendente uploadImg(int id, MultipartFile file) {
-        String url = null;
         try {
-            url = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+            String url = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+            Dipendente d = this.findById(id);
+            d.setImg_profilo(url);
+            return this.dipendenteRepository.save(d);
         } catch (IOException e) {
             throw new BadRequestException("Ci sono stati problemi con l'upload del file!");
         }
-        Dipendente d = this.findById(id);
-        d.setImg_profilo(url);
-        return this.dipendenteRepository.save(d);
     }
 }

@@ -29,18 +29,10 @@ public class Prenotazione {
     @JoinColumn(name = "employee_id")
     private Dipendente dipendente;
 
-    public Prenotazione(LocalDate data_richiesta, Dipendente dipendente, Viaggio viaggio) {
-        this.data_richiesta = data_richiesta;
+    public Prenotazione(Dipendente dipendente, Viaggio viaggio) {
+        this.data_richiesta = LocalDate.now();
         this.dipendente = dipendente;
         this.viaggio = viaggio;
     }
 
-    public Prenotazione(Viaggio viaggio) {
-        this.viaggio = viaggio;
-    }
-
-    public Prenotazione(Viaggio viaggio, Dipendente dipendente) {
-        this.viaggio = viaggio;
-        this.dipendente = dipendente;
-    }
 }

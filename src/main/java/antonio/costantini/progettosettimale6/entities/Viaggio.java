@@ -1,6 +1,10 @@
 package antonio.costantini.progettosettimale6.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -23,14 +27,30 @@ public class Viaggio {
     private LocalDate data;
     @Enumerated(EnumType.STRING)
     private Stato stato;
-    @ManyToOne
-    @JoinColumn(name = "dipendenteId",nullable = false)
-    private Dipendente dipendente;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "viaggio")
+    @JsonIgnore
+    private Prenotazione prenotazione;
 
-    public Viaggio(String destinazione, LocalDate data, Stato stato, Dipendente dipendente) {
+    public Viaggio(String destinazione) {
+        this.destinazione = destinazione;
+        this.stato = Stato.IN_PROGRAMMA;
+    }
+
+    public Viaggio(String destinazione, LocalDate data, Stato stato, Prenotazione prenotazione) {
         this.destinazione = destinazione;
         this.data = data;
         this.stato = stato;
-        this.dipendente = dipendente;
+        this.prenotazione = prenotazione;
+    }
+
+    public Viaggio(String destinazione, LocalDate data, Stato stato) {
+        this.destinazione = destinazione;
+        this.data = data;
+        this.stato = stato;
+    }
+
+    public Viaggio(String destinazione, LocalDate data) {
+        this.destinazione = destinazione;
+        this.data = data;
     }
 }

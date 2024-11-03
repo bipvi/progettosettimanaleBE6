@@ -11,6 +11,7 @@ import antonio.costantini.progettosettimale6.Services.ViaggioService;
 import antonio.costantini.progettosettimale6.entities.Stato;
 import antonio.costantini.progettosettimale6.entities.Viaggio;
 import antonio.costantini.progettosettimale6.exceptions.BadRequestException;
+import antonio.costantini.progettosettimale6.payloads.NewStatoDTO;
 import antonio.costantini.progettosettimale6.payloads.NewViaggioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -67,8 +68,7 @@ public class ViaggioController {
 
     @PatchMapping("/{viaggiId}/stato")
     public Stato updateState(@PathVariable("viaggiId") int id,
-                             @RequestParam("stato") String stato) {
-        Stato s = Stato.valueOf(stato);
-        return this.viaggioService.UpdateState(id, s);
+                             @RequestParam("stato") NewStatoDTO stato) {
+        return this.viaggioService.UpdateState(id, stato.stato());
     }
 }

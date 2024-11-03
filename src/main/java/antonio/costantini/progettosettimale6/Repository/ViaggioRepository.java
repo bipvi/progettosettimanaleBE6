@@ -11,8 +11,4 @@ import java.util.Optional;
 
 @Repository
 public interface ViaggioRepository extends JpaRepository<Viaggio, Integer> {
-
-    Optional<Viaggio> getViaggioByDipendente_IdAndData(int dipendente_id, LocalDate data);
-
-    Optional<Viaggio> getViaggiosByDipendente_Id(int id);
 }

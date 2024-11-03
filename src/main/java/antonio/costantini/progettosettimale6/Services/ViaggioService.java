@@ -3,10 +3,12 @@ package antonio.costantini.progettosettimale6.Services;
 import antonio.costantini.progettosettimale6.Repository.DipendenteRepository;
 import antonio.costantini.progettosettimale6.Repository.ViaggioRepository;
 import antonio.costantini.progettosettimale6.entities.Dipendente;
+import antonio.costantini.progettosettimale6.entities.Prenotazione;
 import antonio.costantini.progettosettimale6.entities.Stato;
 import antonio.costantini.progettosettimale6.entities.Viaggio;
 import antonio.costantini.progettosettimale6.exceptions.BadRequestException;
 import antonio.costantini.progettosettimale6.exceptions.NotFoundException;
+import antonio.costantini.progettosettimale6.payloads.NewStatoDTO;
 import antonio.costantini.progettosettimale6.payloads.NewViaggioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,16 +26,10 @@ import java.util.Optional;
 public class ViaggioService {
     @Autowired
     private ViaggioRepository viaggioRepository;
-    @Autowired
-    private DipendenteService dipendenteService;
 
     public Viaggio save(NewViaggioDTO body) {
-        Dipendente dipendente = this.dipendenteService.findById(body.dipendenteId());
-            this.viaggioRepository.getViaggioByDipendente_IdAndData(dipendente.getId(), body.data()).ifPresent(
-                v -> {
-                    throw new BadRequestException("Il dipendente " + dipendente.getId() + " già in viaggio");
-                });
-            Viaggio viaggio = new Viaggio(body.destinazione(), body.data(), body.stato(), dipendente);
+            Viaggio viaggio = new Viaggio(body.destinazione(), body.data());
+            viaggio.setStato(Stato.valueOf(body.stato().stato()));
             return this.viaggioRepository.save(viaggio);
     }
 
@@ -49,32 +45,20 @@ public class ViaggioService {
     }
 
     public Viaggio getViaggioAndUpdate(int id, NewViaggioDTO body){
-        Dipendente d = this.dipendenteService.findById(body.dipendenteId());
-        Viaggio found = this.findViaggioByID(id);
-
-        if(!found.getData().isEqual(body.data()) && !found.getDipendente().equals(d)){
-            this.viaggioRepository.getViaggioByDipendente_IdAndData(d.getId(), body.data()).ifPresent(
-                    v -> {
-                        throw new BadRequestException("Il dipendente " + d.getEmail() + " già in viaggio");
-                    }
-            );
-        }
-
+        Viaggio found = findViaggioByID(id);
         found.setData(body.data());
-        found.setDipendente(d);
-        found.setStato(body.stato());
         found.setDestinazione(body.destinazione());
         return this.viaggioRepository.save(found);
     }
 
-    public Stato UpdateState(int id, Stato stato){
+    public Stato UpdateState(int id, String stato){
         Viaggio found = this.viaggioRepository.findById(id).orElseThrow();
-        if (found.getStato().equals(stato)) {
+        if (found.getStato().equals(Stato.valueOf(stato))) {
             throw new BadRequestException("Lo stato del viaggio: " + found.getId() + " è già in " + stato);
         }
-        found.setStato(stato);
+        found.setStato( Stato.valueOf(stato));
         this.viaggioRepository.save(found);
-        return stato;
+        return Stato.valueOf(stato);
     }
 
     public void findAndDeleteViaggio(int id){
