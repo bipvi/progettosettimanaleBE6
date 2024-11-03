@@ -39,12 +39,12 @@ public class DipendenteController {
     }
 
     @GetMapping("/{dipendenteId}")
-    public Dipendente findById(@PathVariable int dipendenteId) {
+    public Dipendente findById(@PathVariable("dipendenteId") int dipendenteId) {
         return this.dipendenteService.findById(dipendenteId);
     }
 
     @PutMapping("/{dipendenteId}")
-    public Dipendente findAndUpdate(@PathVariable int dipendenteId, @RequestBody NewDipendenteDTO body, BindingResult bindingResult) {
+    public Dipendente findAndUpdate(@PathVariable("dipendenteId") int dipendenteId, @RequestBody NewDipendenteDTO body, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String messasge = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" - "));
             throw new BadRequestException(messasge);

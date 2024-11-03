@@ -52,7 +52,7 @@ public class ViaggioController {
     }
 //      4. PUT http://localhost:3001/viaggi/{viaggiId} (+ req.body)
     @PutMapping("/{viaggiId}")
-    public Viaggio findAndUpdate(@PathVariable int viaggiId, @RequestBody NewViaggioDTO body, BindingResult bindingResult) {
+    public Viaggio findAndUpdate(@PathVariable("viaggiId") int viaggiId, @RequestBody NewViaggioDTO body, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String mess = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" - "));
             throw new BadRequestException(mess);
@@ -62,7 +62,7 @@ public class ViaggioController {
 //   5. DELETE http://localhost:3001/viaggi/{viaggiId} --> 204
     @DeleteMapping("/{viaggiId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int viaggiId) {
+    public void delete(@PathVariable("viaggiId") int viaggiId) {
         this.viaggioService.findAndDeleteViaggio(viaggiId);
     }
 

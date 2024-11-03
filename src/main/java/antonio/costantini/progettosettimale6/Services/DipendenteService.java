@@ -33,7 +33,7 @@ public class DipendenteService {
             throw new BadRequestException("Username già in uso");
         if (dipendenteRepository.existsByEmail(body.email()))
             throw new BadRequestException("Email ogià in uso");
-        Dipendente d = new Dipendente(body.username(), body.name(), body.cognome(), body.email());
+        Dipendente d = new Dipendente(body.username(), body.nome(), body.cognome(), body.email());
         return dipendenteRepository.save(d);
     }
 
@@ -64,7 +64,7 @@ public class DipendenteService {
             );
         }
         found.setCognome(body.cognome());
-        found.setNome(body.name());
+        found.setNome(body.nome());
         found.setEmail(body.email());
         found.setUsername(body.username());
         this.dipendenteRepository.save(found);
