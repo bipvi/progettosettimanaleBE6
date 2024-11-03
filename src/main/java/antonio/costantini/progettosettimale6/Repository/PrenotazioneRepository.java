@@ -11,9 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Integer> {
+public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID> {
     boolean existsByViaggio(Viaggio viaggio);
     Page<Prenotazione> findByDipendente(Dipendente dipendente, Pageable pageable);
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Prenotazione b WHERE b.dipendente = :dipendente AND b" +

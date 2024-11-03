@@ -52,7 +52,7 @@ public class ViaggioController {
     }
 //      4. PUT http://localhost:3001/viaggi/{viaggiId} (+ req.body)
     @PutMapping("/{viaggiId}")
-    public Viaggio findAndUpdate(@PathVariable int viaggiId, @RequestBody @Validated NewViaggioDTO body, BindingResult bindingResult) {
+    public Viaggio findAndUpdate(@PathVariable int viaggiId, @RequestBody NewViaggioDTO body, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String mess = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" - "));
             throw new BadRequestException(mess);

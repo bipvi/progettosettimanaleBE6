@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class PrenotazioniService {
     @Autowired
@@ -29,7 +31,7 @@ public class PrenotazioniService {
     }
 
     public Prenotazione savePrenotazione(NewPrenotazioneDTO body) {
-        Dipendente dipendente = this.dipendenteService.findById(body.dipendentiId());
+        Dipendente dipendente = this.dipendenteService.findById(body.dipendenteId());
         Viaggio viaggio = this.viaggioService.findViaggioByID(body.viaggioId());
         if (prenotazioneRepository.existsByViaggio(viaggio))
             throw new BadRequestException("Viaggio già assegnato");
@@ -41,12 +43,27 @@ public class PrenotazioniService {
         return prenotazioneRepository.save(prenotazione);
     }
 
-    public Prenotazione getPrenotazioneById(int id) {
+    public Prenotazione getPrenotazioneById(UUID id) {
         return prenotazioneRepository.findById(id).orElseThrow(() -> new NotFoundException("Prenotazione non trovato"));
     }
 
-    public void findAndDelete (int id){
+    public void findAndDelete (UUID id){
         Prenotazione prenotazione = getPrenotazioneById(id);
         prenotazioneRepository.delete(prenotazione);
+    }
+
+    public Prenotazione findAndUpdate(UUID id, NewPrenotazioneDTO body){
+        Dipendente dipendente = this.dipendenteService.findById(body.dipendenteId());
+        Viaggio viaggio = this.viaggioService.findViaggioByID(body.viaggioId());
+        if (prenotazioneRepository.existsByViaggio(viaggio))
+            throw new BadRequestException("Viaggio già assegnato");
+        if (prenotazioneRepository.checkIfEmployeeIsNotAvailable(dipendente, viaggio.getData()))
+            throw new BadRequestException("Dipendente non reperibile per questa data");
+        Prenotazione prenotazione = this.getPrenotazioneById(id);
+        if (body.preferenze() != null) prenotazione.setPreferenze(body.preferenze());
+        else prenotazione.setPreferenze("N/D");
+        prenotazione.setData_richiesta(viaggio.getData());
+        prenotazione.setDipendente(dipendente);
+        return prenotazioneRepository.save(prenotazione);
     }
 }

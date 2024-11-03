@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,7 +31,7 @@ public class PrenotazioniController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Prenotazione savePrenotazione(@RequestBody NewPrenotazioneDTO body, BindingResult bindingResult) {
-        System.out.println(body.dipendentiId() + body.preferenze() + body.viaggioId() + body.data());
+        System.out.println(body.dipendenteId() + body.preferenze() + body.viaggioId() + body.data());
         if (bindingResult.hasErrors()) {
             String mess = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" - "));
             throw new BadRequestException(mess);
@@ -38,10 +39,16 @@ public class PrenotazioniController {
         return prenotazioniService.savePrenotazione(body);
     }
 
+    @PutMapping("/{prenotazioniId}")
+    public Prenotazione getAndUpdate(@PathVariable ("prenotazioniId") UUID prenotazioniId,
+                                     @RequestBody NewPrenotazioneDTO body) {
+        return this.prenotazioniService.findAndUpdate(prenotazioniId, body);
+    }
+
     @GetMapping("/{prenotazioniId}")
-    public Prenotazione getPrenotazione(@PathVariable int prenotazioniId) { return prenotazioniService.getPrenotazioneById(prenotazioniId);}
+    public Prenotazione getPrenotazione(@PathVariable UUID prenotazioniId) { return prenotazioniService.getPrenotazioneById(prenotazioniId);}
 
     @DeleteMapping("/{prenotazioniId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePrenotazione(@PathVariable int prenotazioniId) {prenotazioniService.findAndDelete(prenotazioniId);}
+    public void deletePrenotazione(@PathVariable UUID prenotazioniId) {prenotazioniService.findAndDelete(prenotazioniId);}
 }

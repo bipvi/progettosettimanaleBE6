@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public record NewPrenotazioneDTO(
         String preferenze,
         @NotEmpty(message = "Il campo dipendenteId non può essere vuoto")
-        int dipendentiId,
+        int dipendenteId,
         @NotEmpty(message = "Devi inserire un viaggio")
         int viaggioId,
         @NotEmpty
