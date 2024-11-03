@@ -35,7 +35,7 @@ public class PrenotazioniService {
         Viaggio viaggio = this.viaggioService.findViaggioByID(body.viaggioId());
         if (prenotazioneRepository.existsByViaggio(viaggio))
             throw new BadRequestException("Viaggio già assegnato");
-        if (prenotazioneRepository.checkIfEmployeeIsNotAvailable(dipendente, viaggio.getData()))
+        if (prenotazioneRepository.checkIfEmployeeIsNotAvailable(dipendente , body.data()))
             throw new BadRequestException("Dipendente non reperibile per questa data");
         Prenotazione prenotazione = new Prenotazione(dipendente, viaggio);
         if (body.preferenze() != null) prenotazione.setPreferenze(body.preferenze());
@@ -57,7 +57,7 @@ public class PrenotazioniService {
         Viaggio viaggio = this.viaggioService.findViaggioByID(body.viaggioId());
         if (prenotazioneRepository.existsByViaggio(viaggio))
             throw new BadRequestException("Viaggio già assegnato");
-        if (prenotazioneRepository.checkIfEmployeeIsNotAvailable(dipendente, viaggio.getData()))
+        if (prenotazioneRepository.checkIfEmployeeIsNotAvailable(dipendente, body.data()))
             throw new BadRequestException("Dipendente non reperibile per questa data");
         Prenotazione prenotazione = this.getPrenotazioneById(id);
         if (body.preferenze() != null) prenotazione.setPreferenze(body.preferenze());
