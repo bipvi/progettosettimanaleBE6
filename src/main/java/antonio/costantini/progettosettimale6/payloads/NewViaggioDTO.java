@@ -15,5 +15,4 @@ public record NewViaggioDTO (
         @NotEmpty
         @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$", message = "Il campo deve essere una data nel formato 'yyyy-mm-dd'")
         LocalDate data,
-        NewStatoDTO stato
-){}
+        @Pattern(regexp = "IN_PROGRAMMA|COMPLETATO", message = "Lo stato deve essere 'COMPLETATO' o 'IN_PROGRAMMA'") String stato){}

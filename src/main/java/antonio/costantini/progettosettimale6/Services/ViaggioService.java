@@ -29,7 +29,7 @@ public class ViaggioService {
 
     public Viaggio save(NewViaggioDTO body) {
             Viaggio viaggio = new Viaggio(body.destinazione(), body.data());
-            viaggio.setStato(Stato.valueOf(body.stato().stato()));
+            viaggio.setStato(Stato.valueOf(body.stato()));
             return this.viaggioRepository.save(viaggio);
     }
 
