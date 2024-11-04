@@ -17,6 +17,7 @@ public class AuthService {
 
     public String checkCredentialsAndGenerateToken(DipendenteLoginDTO body) {
         Dipendente found = this.dipendenteService.findByEmail(body.email());
+        System.out.println(found);
         if(found.getPassword().equals(body.password())) {
             return jwt.generateToken(found);
         } else throw new UnauthorizedException("Credenziali errate");

@@ -25,6 +25,7 @@ public class JWT {
 
     public void verifyToken(String token) {
         try{
+            System.out.println(token);
             Jwts.parser()
                     .verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token);
         }catch(Exception e){

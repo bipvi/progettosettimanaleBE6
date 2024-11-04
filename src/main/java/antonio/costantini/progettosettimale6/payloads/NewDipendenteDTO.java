@@ -16,6 +16,8 @@ public record NewDipendenteDTO (
     String cognome,
     @NotEmpty(message = "Il campo email non può essere vuioto!")
     @Email(message = "L'email deve essere del tipo user@example.com")
-    String email
+    String email,
+    @NotEmpty@Size(min = 6, max=20, message = "La password deve essere maggiore di 6 caratteri e minore di 20 caratteri")
+    String password
     ){}
 

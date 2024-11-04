@@ -22,9 +22,9 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null || !authorizationHeader.startsWith("Bearer ")) throw new UnauthorizedException("Inserire token nell'Authorization Header nel formato corretto!");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) throw new UnauthorizedException("Inserire token nell'Authorization Header nel formato corretto!");
 
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.substring(7);
         jwt.verifyToken(token);
 
         filterChain.doFilter(request, response);
