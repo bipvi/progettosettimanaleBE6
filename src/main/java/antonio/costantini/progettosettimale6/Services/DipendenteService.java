@@ -71,6 +71,10 @@ public class DipendenteService {
         return found;
     }
 
+    public Dipendente findByEmail(String email){
+        return this.dipendenteRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
+    }
+
     public void findAndDelete(int id) {
         Dipendente found = findById(id);
         dipendenteRepository.delete(found);

@@ -23,6 +23,7 @@ public class Dipendente {
     @Column(nullable = false)
     private String email;
     private String img_profilo;
+    private String password;
 
 
     public Dipendente(String username, String nome, String cognome, String email) {
