@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,13 +28,15 @@ public class DipendenteService {
     private DipendenteRepository dipendenteRepository;
     @Autowired
     private Cloudinary cloudinary;
+    @Autowired
+    private PasswordEncoder bcrypt;
 
     public Dipendente save(NewDipendenteDTO body) {
         if (dipendenteRepository.existsByUsername(body.username()))
             throw new BadRequestException("Username già in uso");
         if (dipendenteRepository.existsByEmail(body.email()))
             throw new BadRequestException("Email ogià in uso");
-        Dipendente d = new Dipendente(body.username(), body.nome(), body.cognome(), body.email());
+        Dipendente d = new Dipendente(body.username(), body.nome(), body.cognome(), body.email(),bcrypt.encode(body.password()));
         return dipendenteRepository.save(d);
     }
 
@@ -66,6 +69,7 @@ public class DipendenteService {
         found.setCognome(body.cognome());
         found.setNome(body.nome());
         found.setEmail(body.email());
+        found.setPassword(bcrypt.encode(body.password()));
         found.setUsername(body.username());
         this.dipendenteRepository.save(found);
         return found;

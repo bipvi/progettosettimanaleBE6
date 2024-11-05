@@ -2,6 +2,7 @@ package antonio.costantini.progettosettimale6.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,8 +24,15 @@ public class ExceptionsHandler {
         return new ErrorsPayload(e.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsPayload handleForbidden(AuthorizationDeniedException ex) {
+        return new ErrorsPayload("Non hai i permessi per accedere", LocalDateTime.now());
+    }
+
+
     @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorsPayload handleUnauthorized(UnauthorizedException ex) {
         return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
     }

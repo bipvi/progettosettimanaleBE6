@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +43,22 @@ public class DipendenteController {
     @GetMapping("/{dipendenteId}")
     public Dipendente findById(@PathVariable("dipendenteId") int dipendenteId) {
         return this.dipendenteService.findById(dipendenteId);
+    }
+
+    @GetMapping("/me")
+    public Dipendente getProfile(@AuthenticationPrincipal Dipendente currentAuthenticatedUser) {
+        return currentAuthenticatedUser;
+    }
+
+    @PutMapping("/me")
+    public Dipendente updateProfile(@AuthenticationPrincipal Dipendente currentAuthenticatedUser, @RequestBody @Validated NewDipendenteDTO body) {
+        return this.dipendenteService.findDipendenteAndUpdate(currentAuthenticatedUser.getId(), body);
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProfile(@AuthenticationPrincipal Dipendente currentAuthenticatedUser) {
+        this.dipendenteService.findAndDelete(currentAuthenticatedUser.getId());
     }
 
     @PutMapping("/{dipendenteId}")
